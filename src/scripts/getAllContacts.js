@@ -1,16 +1,12 @@
 // src/scripts/getAllContacts.js
 
-const fs = require("fs");
-const { PATH_DB } = require("../constants/contacts");
+import fs from "fs";
+import { PATH_DB } from "../constants/contacts.js";
 
-function getAllContacts() {
-  try {
-    const data = JSON.parse(fs.readFileSync(PATH_DB, "utf8"));
-    return data;
-  } catch (error) {
-    console.error("Error reading contacts from db.json:", error);
-    return [];
-  }
-}
+const getAllContacts = () => {
+  const db = JSON.parse(fs.readFileSync(PATH_DB, "utf-8"));
+  const contacts = db.contacts || [];
+  return contacts;
+};
 
-module.exports = getAllContacts;
+export default getAllContacts;

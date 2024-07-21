@@ -1,9 +1,5 @@
 // src/constants/contacts.js
 
-const path = require("path");
+import path from "path";
 
-const PATH_DB = path.join(__dirname, "../db/db.json");
-
-module.exports = {
-  PATH_DB,
-};
+export const PATH_DB = path.join(__dirname, "../db/db.json");

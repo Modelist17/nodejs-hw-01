@@ -1,25 +1,18 @@
 // src/scripts/generateContacts.js
 
-const fs = require("fs");
-const { PATH_DB } = require("../constants/contacts");
-const createFakeContact = require("../utils/createFakeContact");
+import fs from 'fs';
+import { PATH_DB } from '../constants/contacts.js';
+import createFakeContact from '../utils/createFakeContact.js';
 
-function generateContacts(numContacts) {
-  const contacts = [];
+const generateContacts = (count) => {
+  const db = JSON.parse(fs.readFileSync(PATH_DB, 'utf-8'));
+  const contacts = db.contacts || [];
 
-  for (let i = 0; i < numContacts; i++) {
-    const newContact = createFakeContact();
-    contacts.push(newContact);
+  for (let i = 0; i < count; i++) {
+    contacts.push(createFakeContact());
   }
 
-  try {
-    let data = JSON.parse(fs.readFileSync(PATH_DB, "utf8"));
-    data = [...data, ...contacts];
-    fs.writeFileSync(PATH_DB, JSON.stringify(data, null, 2));
-    console.log(`${numContacts} contacts generated and saved to ${PATH_DB}`);
-  } catch (error) {
-    console.error("Error writing contacts to db.json:", error);
-  }
-}
+  fs.writeFileSync(PATH_DB, JSON.stringify({ contacts }, null, 2));
+};
 
-module.exports = generateContacts;
+export default generateContacts;

@@ -1,15 +1,10 @@
 // src/scripts/removeAllContacts.js
 
-const fs = require("fs");
-const { PATH_DB } = require("../constants/contacts");
+import fs from "fs";
+import { PATH_DB } from "../constants/contacts.js";
 
-function removeAllContacts() {
-  try {
-    fs.writeFileSync(PATH_DB, "[]");
-    console.log("All contacts removed from db.json");
-  } catch (error) {
-    console.error("Error removing contacts from db.json:", error);
-  }
-}
+const removeAllContacts = () => {
+  fs.writeFileSync(PATH_DB, JSON.stringify({ contacts: [] }, null, 2));
+};
 
-module.exports = removeAllContacts;
+export default removeAllContacts;

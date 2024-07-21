@@ -1,13 +1,16 @@
-const faker = require("@faker-js/faker");
+// src/utils/createFakeContact.js
 
-function createFakeContact() {
+import { faker } from "@faker-js/faker";
+
+
+const createFakeContact = () => {
   return {
-    id: faker.datatype.uuid(),
-    name: faker.person.fullName(),
-    phone: faker.phone.number(),
-    email: faker.internet.email(),
-    job: faker.person.jobTitle(),
+    id: faker.string.uuid(), // Генерує унікальний ідентифікатор
+    name: faker.person.fullName(), // Генерує повне ім'я
+    phone: faker.phone.number(), // Генерує номер телефону
+    email: faker.internet.email(), // Генерує email адресу
+    job: faker.person.jobTitle(), // Генерує назву професії
   };
-}
+};
 
-module.exports = createFakeContact;
+export default createFakeContact;
