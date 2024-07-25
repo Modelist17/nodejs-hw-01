@@ -1,16 +1,19 @@
-// src/scripts/removeLastContact.js
+import { PATH_DB } from '../constants/contacts.js';
+import { getAllContacts } from './getAllContacts.js';
+import fs from 'node:fs/promises';
 
-import fs from "fs";
-import { PATH_DB } from "../constants/contacts.js";
-
-const removeLastContact = () => {
-  const db = JSON.parse(fs.readFileSync(PATH_DB, "utf-8"));
-  const contacts = db.contacts || [];
-
-  if (contacts.length > 0) {
-    contacts.pop();
-    fs.writeFileSync(PATH_DB, JSON.stringify({ contacts }, null, 2));
+export const removeLastContact = async () => {
+  try {
+    const data = await getAllContacts();
+    if (data.length === 0) {
+      console.log('Масив з контактами порожній');
+      return;
+    }
+    data.pop();
+    fs.writeFile(PATH_DB, JSON.stringify(data), 'utf8');
+  } catch (error) {
+    console.log(error);
   }
 };
 
-export default removeLastContact;
+removeLastContact();

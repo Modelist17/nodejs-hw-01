@@ -1,12 +1,20 @@
-// src/scripts/getAllContacts.js
-
-import fs from "fs";
 import { PATH_DB } from "../constants/contacts.js";
+import fs from "node:fs/promises";
+import { isValidJSON } from "../utils/isValidJSON.js";
 
-const getAllContacts = () => {
-  const db = JSON.parse(fs.readFileSync(PATH_DB, "utf-8"));
-  const contacts = db.contacts || [];
-  return contacts;
+export const getAllContacts = async () => {
+  try {
+    const dataJSON = await fs.readFile(PATH_DB, "utf8");
+    if (!isValidJSON(dataJSON)) {
+      throw new Error("Файл містить невалідний JSON");
+    }
+    const data = Array.isArray(JSON.parse(dataJSON))
+      ? JSON.parse(dataJSON)
+      : [];
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export default getAllContacts;
+console.log(await getAllContacts());

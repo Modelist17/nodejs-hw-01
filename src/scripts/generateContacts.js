@@ -1,18 +1,30 @@
-// src/scripts/generateContacts.js
+import { PATH_DB } from "../constants/contacts.js";
+import fs from "node:fs/promises";
+import { createFakeContact } from "../utils/createFakeContact.js";
+import { isValidJSON } from "../utils/isValidJSON.js";
 
-import fs from 'fs';
-import { PATH_DB } from '../constants/contacts.js';
-import createFakeContact from '../utils/createFakeContact.js';
-
-const generateContacts = (count) => {
-  const db = JSON.parse(fs.readFileSync(PATH_DB, 'utf-8'));
-  const contacts = db.contacts || [];
-
-  for (let i = 0; i < count; i++) {
-    contacts.push(createFakeContact());
+const generateContacts = async (number) => {
+  const newContacts = [];
+  for (let i = 1; i <= number; i += 1) {
+    newContacts.push(createFakeContact());
   }
+  try {
+    const contactsDataJSON = await fs.readFile(PATH_DB, "utf8");
 
-  fs.writeFileSync(PATH_DB, JSON.stringify({ contacts }, null, 2));
+    if (!isValidJSON(contactsDataJSON)) {
+      throw new Error("Файл містить невалідний JSON");
+    }
+
+    const contactsData = Array.isArray(JSON.parse(contactsDataJSON))
+      ? JSON.parse(contactsDataJSON)
+      : [];
+    const newContactsData = [...contactsData, ...newContacts];
+
+    await fs.writeFile(PATH_DB, JSON.stringify(newContactsData), "utf8");
+    console.log("Дані успішно додані до файлу.");
+  } catch (error) {
+    console.error("Помилка додавання даних до файлу:", error);
+  }
 };
 
-export default generateContacts;
+generateContacts(5);

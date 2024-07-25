@@ -1,10 +1,13 @@
-// src/scripts/removeAllContacts.js
+import { PATH_DB } from '../constants/contacts.js';
+import fs from 'node:fs/promises';
 
-import fs from "fs";
-import { PATH_DB } from "../constants/contacts.js";
-
-const removeAllContacts = () => {
-  fs.writeFileSync(PATH_DB, JSON.stringify({ contacts: [] }, null, 2));
+export const removeAllContacts = async () => {
+  try {
+    fs.writeFile(PATH_DB, '[]', 'utf8');
+    console.log('Дані успішно видалені.');
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export default removeAllContacts;
+removeAllContacts();

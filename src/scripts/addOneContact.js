@@ -1,16 +1,27 @@
-// src/scripts/addOneContact.js
-
-import fs from "fs";
 import { PATH_DB } from "../constants/contacts.js";
-import createFakeContact from "../utils/createFakeContact.js";
+import fs from "node:fs/promises";
+import { createFakeContact } from "../utils/createFakeContact.js";
+import { isValidJSON } from "../utils/isValidJSON.js";
 
-const addOneContact = () => {
-  const db = JSON.parse(fs.readFileSync(PATH_DB, "utf-8"));
-  const contacts = db.contacts || [];
+export const addOneContact = async () => {
+  const newContact = createFakeContact();
+  try {
+    const contactsDataJSON = await fs.readFile(PATH_DB, "utf8");
 
-  contacts.push(createFakeContact());
+    if (!isValidJSON(contactsDataJSON)) {
+      throw new Error("Файл містить невалідний JSON");
+    }
 
-  fs.writeFileSync(PATH_DB, JSON.stringify({ contacts }, null, 2));
+    const contactsData = Array.isArray(JSON.parse(contactsDataJSON))
+      ? JSON.parse(contactsDataJSON)
+      : [];
+    const newContactsData = [...contactsData, newContact];
+
+    await fs.writeFile(PATH_DB, JSON.stringify(newContactsData), "utf8");
+    console.log("Дані успішно додані до файлу.");
+  } catch (error) {
+    console.error("Помилка додавання даних до файлу:", error);
+  }
 };
 
-export default addOneContact;
+addOneContact();
